@@ -202,8 +202,32 @@ p, li { white-space: pre-wrap; }
      <string>Chanson</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuConnection">
+    <property name="title">
+     <string>Connexion</string>
+    </property>
+    <addaction name="startServer"/>
+    <addaction name="startClient"/>
+    <addaction name="actionTest"/>
+   </widget>
    <addaction name="menuChanson"/>
+   <addaction name="menuConnection"/>
   </widget>
+  <action name="startServer">
+   <property name="text">
+    <string>Démarrer le serveur</string>
+   </property>
+  </action>
+  <action name="startClient">
+   <property name="text">
+    <string>Connexion</string>
+   </property>
+  </action>
+  <action name="actionTest">
+   <property name="text">
+    <string>test</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

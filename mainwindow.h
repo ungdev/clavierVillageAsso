@@ -1,8 +1,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include "server.h"
+#include "client.h"
 #include <cstdint>
+#include <QMainWindow>
+#include <QTimer>
+#include <QVariant>
+#include <QKeyEvent>
+#include <QLayout>
+#include <QHash>
+#include <QHashIterator>
+#include <QAction>
+#include <QMessageBox>
+#include <QInputDialog>
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +30,8 @@ public:
 public slots:
     void readyClicked();
     void launchClicked();
+    void startServer();
+    void startClient();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
@@ -29,19 +42,26 @@ private:
     bool started;
     int actualCharIndex;
     QString actualSongContent;
-    bool hasFailed;
     int removedChars;
     int lastRemovedChars;
     QHash<QString, QString>* songsList;
 
     int maximumEvery300ms;
-
     QTimer* charsCounterTimer;
+
+    bool isClient;
+    bool ready;
+    bool otherReady;
 
     QString generateRichHTMLFromLyrics(bool success);
     void updateScroll(QString part);
     void charsCounter();
     void initSongs();
+
+    Client* client;
+    Server* server;
+    void updateButtons();
+    bool requireClient(bool silent = false);
 };
 
 #endif // MAINWINDOW_H

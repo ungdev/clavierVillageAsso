@@ -1,14 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QTimer>
-#include <QVariant>
-#include <QKeyEvent>
-#include <QLayout>
-#include <QHash>
-#include <QHashIterator>
-#include <QAction>
-
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -20,26 +12,26 @@ MainWindow::MainWindow(QWidget *parent) :
     songsList = new QHash<QString, QString>();
 
     songsList->insert(QString("Le Grand Vicaire"),
-            QString("Chez nous le vélo, c'est une coutuuuuume"
-            "Mon papa, il fait le cadre"
-            "Ma maman, elle fait la selle,"
-            "Et le curé la pommmpeeee..."
-            "Et le grand vicaire toujours par derrière"
-            "N'a jamais pu la pomper"
-            "Et c'est ce qui l'emmerdeeeee!!!"
-            "Chez nous les Renault, c'est une coutuuuuume,"
-            "Mon papa, a une Mégane"
-            "Ma maman, une Twingo,"
-            "Et le curé l' Alpine..."
-            "Et le grand vicquaire toujours par derrière"
-            "N'a jamais pu la piner"
-            "Et c'est ce qui l'emmerdeeeee!!!"
-            "Chez nous le jardin, c'est une coutuuuuume,"
-            "Mon papa, fait des tomates"
-            "Ma maman, fait des salades,"
-            "Et le curé laboure..."
-            "Et le grand vicquaire toujours par derrière"
-            "N'a jamais pu la bourrer"
+            QString("Chez nous le vélo, c'est une coutuuuuume "
+            "Mon papa, il fait le cadre "
+            "Ma maman, elle fait la selle, "
+            "Et le curé la pommmpeeee... "
+            "Et le grand vicaire toujours par derrière "
+            "N'a jamais pu la pomper "
+            "Et c'est ce qui l'emmerdeeeee!!! "
+            "Chez nous les Renault, c'est une coutuuuuume, "
+            "Mon papa, a une Mégane "
+            "Ma maman, une Twingo, "
+            "Et le curé l' Alpine... "
+            "Et le grand vicquaire toujours par derrière "
+            "N'a jamais pu la piner "
+            "Et c'est ce qui l'emmerdeeeee!!! "
+            "Chez nous le jardin, c'est une coutuuuuume, "
+            "Mon papa, fait des tomates "
+            "Ma maman, fait des salades, "
+            "Et le curé laboure... "
+            "Et le grand vicquaire toujours par derrière "
+            "N'a jamais pu la bourrer "
             "Et c'est ce qui l'emmerdeeeee!!!"));
 
     initSongs();
@@ -56,6 +48,10 @@ MainWindow::MainWindow(QWidget *parent) :
     charsCounterTimer->start(300);
     maximumEvery300ms = 5;
 
+    isClient = false;
+    ready = false;
+    otherReady = false;
+
     ui->lyricsViewer->setHtml(generateRichHTMLFromLyrics(false));
     ui->countdown->setText("");
     ui->speed->setText("");
@@ -64,6 +60,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->readyButton, &QPushButton::clicked, this, &MainWindow::readyClicked);
     connect(ui->launchButton, &QPushButton::clicked, this, &MainWindow::launchClicked);
     connect(charsCounterTimer, &QTimer::timeout, this, &MainWindow::charsCounter);
+    connect(ui->startServer, &QAction::triggered, this, &MainWindow::startServer);
+    connect(ui->startClient, &QAction::triggered, this, &MainWindow::startClient);
+
+    connect(ui->actionTest, &QAction::triggered, this, [=]() {
+        server->rawSend("ping");
+    });
 }
 
 MainWindow::~MainWindow()
@@ -73,14 +75,31 @@ MainWindow::~MainWindow()
 
 void MainWindow::readyClicked()
 {
-    qDebug() << "Ready";
-    ui->launchButton->setEnabled(true);
-    ui->readyButton->setEnabled(false);
+    ready = true;
+
+    if (requireClient(true))
+    {
+        server->rawSend("ready");
+    }
+    else
+    {
+        client->rawSend("ready");
+    }
+
+    updateButtons();
 }
 
 void MainWindow::launchClicked()
 {
-    qDebug() << "Launch";
+    if (requireClient(true))
+    {
+        server->rawSend("start");
+    }
+    else
+    {
+        client->rawSend("start");
+    }
+
 
     ui->launchButton->setEnabled(false);
 
@@ -109,7 +128,7 @@ void MainWindow::launchClicked()
 void MainWindow::keyPressEvent(QKeyEvent *e)
 {
     if (!started) {
-        // return;
+        return;
     }
 
     QString typed = e->text().toLower();
@@ -175,7 +194,6 @@ void MainWindow::initSongs()
 
     while (i != songsList->constEnd())
     {
-        qDebug() << "okok";
         QAction* action = new QAction(i.key(), this);
         connect(action, &QAction::triggered, this, [=]() {
             // Ne pas changer de chanson en cours de route
@@ -200,4 +218,60 @@ void MainWindow::initSongs()
         ++i;
         ui->menuChanson->addAction(action);
     }
+}
+
+void MainWindow::startServer()
+{
+    server = new Server();
+    connect(server, &Server::ready, [=]() {
+        otherReady = true;
+        updateButtons();
+    });
+}
+
+void MainWindow::startClient()
+{
+    QString host = QInputDialog::getText(this, "Connexion", "Adresse de l'hôte", QLineEdit::Normal, "127.0.0.1");
+    int port = QInputDialog::getInt(this, "Connexion", "Port de l'hôte", 50185);
+    client = new Client(this, host, port);
+    isClient = true;
+
+    connect(client, &Client::ready, [=]() {
+        otherReady = true;
+        updateButtons();
+    });
+
+    connect(client, &Client::start, [=]() {
+        if (!started)
+        {
+            launchClicked();
+        }
+    });
+}
+
+void MainWindow::updateButtons()
+{
+    if (ready)
+    {
+        ui->readyButton->setEnabled(false);
+        if (otherReady)
+        {
+            ui->launchButton->setEnabled(true);
+        }
+    }
+}
+
+bool MainWindow::requireClient(bool silent)
+{
+    if (!isClient)
+    {
+        if (!silent)
+        {
+            QMessageBox* warn = new QMessageBox(QMessageBox::Warning, "Connexion", "Vous devez être connecté pour utiliser le programme");
+            warn->show();
+        }
+        return true;
+    }
+
+    return false;
 }
