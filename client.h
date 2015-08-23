@@ -21,6 +21,7 @@ private slots:
 signals:
     void ready();
     void start();
+    void ping();
 
 private:
     QTcpSocket* socket;

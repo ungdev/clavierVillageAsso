@@ -208,7 +208,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="startServer"/>
     <addaction name="startClient"/>
-    <addaction name="actionTest"/>
+    <addaction name="textConnexion"/>
    </widget>
    <addaction name="menuChanson"/>
    <addaction name="menuConnection"/>
@@ -223,9 +223,9 @@ p, li { white-space: pre-wrap; }
     <string>Connexion</string>
    </property>
   </action>
-  <action name="actionTest">
+  <action name="textConnexion">
    <property name="text">
-    <string>test</string>
+    <string>Tester la connexion</string>
    </property>
   </action>
  </widget>

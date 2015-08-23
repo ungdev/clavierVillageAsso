@@ -15,6 +15,7 @@ public:
 
 signals:
     void ready();
+    void ping();
 
 private slots:
     void clientDisconnected();

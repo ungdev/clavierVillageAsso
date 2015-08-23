@@ -68,6 +68,7 @@ void Server::broadcastMessage()
     }
     else if (message == "ping")
     {
+        emit ping();
         rawSend(message);
     }
 

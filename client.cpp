@@ -45,6 +45,10 @@ void Client::readMessage()
     {
         emit start();
     }
+    else if (message == "ping")
+    {
+        emit ping();
+    }
 }
 
 void Client::displayError(QAbstractSocket::SocketError socketError)

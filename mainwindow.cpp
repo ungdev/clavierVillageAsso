@@ -63,8 +63,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->startServer, &QAction::triggered, this, &MainWindow::startServer);
     connect(ui->startClient, &QAction::triggered, this, &MainWindow::startClient);
 
-    connect(ui->actionTest, &QAction::triggered, this, [=]() {
-        server->rawSend("ping");
+    connect(ui->textConnexion, &QAction::triggered, this, [=]() {
+        if (isClient)
+        {
+            client->rawSend("ping");
+        }
+        else
+        {
+            server->rawSend("ping");
+        }
     });
 }
 
@@ -227,6 +234,11 @@ void MainWindow::startServer()
         otherReady = true;
         updateButtons();
     });
+
+    connect(server, &Server::ping, [=]() {
+        QMessageBox* ping = new QMessageBox(QMessageBox::Information, "Connexion", "Connexion effective", QMessageBox::Ok);
+        ping->show();
+    });
 }
 
 void MainWindow::startClient()
@@ -246,6 +258,11 @@ void MainWindow::startClient()
         {
             launchClicked();
         }
+    });
+
+    connect(client, &Client::ping, [=]() {
+        QMessageBox* ping = new QMessageBox(QMessageBox::Information, "Connexion", "Connexion effective", QMessageBox::Ok);
+        ping->show();
     });
 }
 
