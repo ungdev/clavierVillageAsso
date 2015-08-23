@@ -210,8 +210,15 @@ p, li { white-space: pre-wrap; }
     <addaction name="startClient"/>
     <addaction name="textConnexion"/>
    </widget>
+   <widget class="QMenu" name="menuSerial">
+    <property name="title">
+     <string>Serial</string>
+    </property>
+    <addaction name="connectArduino"/>
+   </widget>
    <addaction name="menuChanson"/>
    <addaction name="menuConnection"/>
+   <addaction name="menuSerial"/>
   </widget>
   <action name="startServer">
    <property name="text">
@@ -226,6 +233,11 @@ p, li { white-space: pre-wrap; }
   <action name="textConnexion">
    <property name="text">
     <string>Tester la connexion</string>
+   </property>
+  </action>
+  <action name="connectArduino">
+   <property name="text">
+    <string>Connexion</string>
    </property>
   </action>
  </widget>

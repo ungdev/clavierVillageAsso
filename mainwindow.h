@@ -3,6 +3,7 @@
 
 #include "server.h"
 #include "client.h"
+#include "arduino.h"
 #include <cstdint>
 #include <QMainWindow>
 #include <QTimer>
@@ -14,6 +15,7 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QDebug>
 
 namespace Ui {
 class MainWindow;
@@ -52,12 +54,14 @@ private:
     bool isClient;
     bool ready;
     bool otherReady;
+    bool arduinoIsReady;
 
     QString generateRichHTMLFromLyrics(bool success);
     void updateScroll(QString part);
     void charsCounter();
     void initSongs();
 
+    Arduino* arduino;
     Client* client;
     Server* server;
     void updateButtons();

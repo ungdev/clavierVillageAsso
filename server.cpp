@@ -1,10 +1,5 @@
 #include "server.h"
 
-#include <QMessageBox>
-#include <QNetworkInterface>
-
-#include <QDebug>
-
 Server::Server(QObject *parent) : QObject(parent)
 {
     server = new QTcpServer(this);

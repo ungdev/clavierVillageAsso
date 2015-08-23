@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QDebug>
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -51,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     isClient = false;
     ready = false;
     otherReady = false;
+    arduinoIsReady = false;
 
     ui->lyricsViewer->setHtml(generateRichHTMLFromLyrics(false));
     ui->countdown->setText("");
@@ -72,6 +71,11 @@ MainWindow::MainWindow(QWidget *parent) :
         {
             server->rawSend("ping");
         }
+    });
+
+    connect(ui->connectArduino, &QAction::triggered, this, [=]() {
+        arduino = new Arduino(this);
+        arduinoIsReady = true;
     });
 }
 
@@ -191,6 +195,15 @@ void MainWindow::charsCounter()
 
     ui->speed->setText(QVariant(removedCharsSinceLast).toString() + " chars.(1/3)s⁻¹");
     ui->counter->setText(QVariant(actualSongContent.length() - removedChars).toString());
+
+    if (arduinoIsReady)
+    {
+        if (arduino->isAvailable())
+        {
+            qDebug() << "okok";
+            arduino->rawSend(QVariant(percent100).toString());
+        }
+    }
 
     lastRemovedChars = removedChars;
 }
