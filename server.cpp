@@ -66,13 +66,18 @@ void Server::broadcastMessage()
         emit ping();
         rawSend(message);
     }
+    else if (message.startsWith("speed-"))
+    {
+        int value = QVariant(message.mid(6, 3)).toInt();
+        emit clientSpeed(value);
+    }
 
     blockSize = 0;
 }
 
 void Server::clientDisconnected()
 {
-    QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
+    QTcpSocket* socket = qobject_cast<  QTcpSocket*>(sender());
     if (socket == 0)
     {
         return;

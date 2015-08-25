@@ -170,7 +170,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>130</y>
+      <y>110</y>
       <width>391</width>
       <height>41</height>
      </rect>
@@ -185,6 +185,25 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>120</y>
+      <width>151</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../../Téléchargements/logo.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
@@ -216,9 +235,16 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="connectArduino"/>
    </widget>
+   <widget class="QMenu" name="menuUNG">
+    <property name="title">
+     <string>UNG</string>
+    </property>
+    <addaction name="hideMenus"/>
+   </widget>
    <addaction name="menuChanson"/>
    <addaction name="menuConnection"/>
    <addaction name="menuSerial"/>
+   <addaction name="menuUNG"/>
   </widget>
   <action name="startServer">
    <property name="text">
@@ -238,6 +264,11 @@ p, li { white-space: pre-wrap; }
   <action name="connectArduino">
    <property name="text">
     <string>Connexion</string>
+   </property>
+  </action>
+  <action name="hideMenus">
+   <property name="text">
+    <string>Tout ok; cacher les menus</string>
    </property>
   </action>
  </widget>

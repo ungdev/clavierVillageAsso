@@ -77,6 +77,12 @@ MainWindow::MainWindow(QWidget *parent) :
         arduino = new Arduino(this);
         arduinoIsReady = true;
     });
+
+    connect(ui->hideMenus, &QAction::triggered, this, [=]() {
+        ui->menuConnection->menuAction()->setVisible(false);
+        ui->menuSerial->menuAction()->setVisible(false);
+        ui->menuUNG->menuAction()->setVisible(false);
+    });
 }
 
 MainWindow::~MainWindow()
@@ -196,12 +202,25 @@ void MainWindow::charsCounter()
     ui->speed->setText(QVariant(removedCharsSinceLast).toString() + " chars.(1/3)s⁻¹");
     ui->counter->setText(QVariant(actualSongContent.length() - removedChars).toString());
 
-    if (arduinoIsReady)
+    QString rawValue = QVariant(percent100).toString();
+    if (isClient)
     {
-        if (arduino->isAvailable())
+        client->rawSend("speed-" + rawValue);
+    }
+    else
+    {
+        QString value = "s" + rawValue;
+        if (arduinoIsReady)
         {
-            qDebug() << "okok";
-            arduino->rawSend(QVariant(percent100).toString());
+            if (arduino->isAvailable())
+            {
+                qDebug() << "Send to arduino : «" << value << "»";
+                arduino->rawSend(value);
+            }
+        }
+        else
+        {
+            qDebug() << "Would have sent to arduino : «" << value << "»";
         }
     }
 
@@ -251,6 +270,22 @@ void MainWindow::startServer()
     connect(server, &Server::ping, [=]() {
         QMessageBox* ping = new QMessageBox(QMessageBox::Information, "Connexion", "Connexion effective", QMessageBox::Ok);
         ping->show();
+    });
+
+    connect(server, &Server::clientSpeed, [=](int clientSpeed) {
+        QString value = "c" + QVariant(clientSpeed).toString();
+        if (arduinoIsReady)
+        {
+            if (arduino->isAvailable())
+            {
+                qDebug() << "Send to arduino :" << value;
+                arduino->rawSend(value);
+            }
+        }
+        else
+        {
+            qDebug() << "Would have sent to arduino :" << value;
+        }
     });
 }
 
