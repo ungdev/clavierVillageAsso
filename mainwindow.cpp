@@ -57,7 +57,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->counter->setText("");
 
     connect(ui->readyButton, &QPushButton::clicked, this, &MainWindow::readyClicked);
-    connect(ui->launchButton, &QPushButton::clicked, this, &MainWindow::launchClicked);
+    connect(ui->launchButton, &QPushButton::clicked, [=]() {
+        launchClicked(true);
+    });
     connect(charsCounterTimer, &QTimer::timeout, this, &MainWindow::charsCounter);
     connect(ui->startServer, &QAction::triggered, this, &MainWindow::startServer);
     connect(ui->startClient, &QAction::triggered, this, &MainWindow::startClient);
@@ -106,15 +108,18 @@ void MainWindow::readyClicked()
     updateButtons();
 }
 
-void MainWindow::launchClicked()
+void MainWindow::launchClicked(bool resend)
 {
-    if (requireClient(true))
+    if (resend)
     {
-        server->rawSend("start");
-    }
-    else
-    {
-        client->rawSend("start");
+        if (requireClient(true))
+        {
+            server->rawSend("start");
+        }
+        else
+        {
+            client->rawSend("start");
+        }
     }
 
 
@@ -214,13 +219,13 @@ void MainWindow::charsCounter()
         {
             if (arduino->isAvailable())
             {
-                qDebug() << "Send to arduino : «" << value << "»";
+                // qDebug() << "Send to arduino : «" << value << "»";
                 arduino->rawSend(value);
             }
         }
         else
         {
-            qDebug() << "Would have sent to arduino : «" << value << "»";
+            // qDebug() << "Would have sent to arduino : «" << value << "»";
         }
     }
 
@@ -278,13 +283,20 @@ void MainWindow::startServer()
         {
             if (arduino->isAvailable())
             {
-                qDebug() << "Send to arduino :" << value;
+                // qDebug() << "Send to arduino :" << value;
                 arduino->rawSend(value);
             }
         }
         else
         {
-            qDebug() << "Would have sent to arduino :" << value;
+            // qDebug() << "Would have sent to arduino :" << value;
+        }
+    });
+
+    connect(server, &Server::start, [=]() {
+        if (!started)
+        {
+            launchClicked(false);
         }
     });
 }

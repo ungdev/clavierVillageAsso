@@ -15,7 +15,7 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QInputDialog>
-#include <QDebug>
+//#include <QDebug>
 
 namespace Ui {
 class MainWindow;
@@ -31,7 +31,7 @@ public:
 
 public slots:
     void readyClicked();
-    void launchClicked();
+    void launchClicked(bool resend = true);
     void startServer();
     void startClient();
 

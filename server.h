@@ -6,7 +6,7 @@
 #include <QTcpSocket>
 #include <QMessageBox>
 #include <QNetworkInterface>
-#include <QDebug>
+//#include <QDebug>
 
 class Server : public QObject
 {
@@ -20,6 +20,7 @@ signals:
     void ready();
     void ping();
     void clientSpeed(int speed);
+    void start();
 
 private slots:
     void clientDisconnected();

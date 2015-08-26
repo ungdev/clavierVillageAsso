@@ -66,6 +66,10 @@ void Server::broadcastMessage()
         emit ping();
         rawSend(message);
     }
+    else if (message == "start")
+    {
+        emit start();
+    }
     else if (message.startsWith("speed-"))
     {
         int value = QVariant(message.mid(6, 3)).toInt();
@@ -100,7 +104,7 @@ void Server::rawSend(QString message)
 
     for(int i = 0; i < clients.size(); ++i)
     {
-        qDebug() << "server sending" << message << "to one guy";
+        // qDebug() << "server sending" << message << "to one guy";
         clients[i]->write(packet);
     }
 }

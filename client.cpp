@@ -85,7 +85,7 @@ void Client::rawSend(QString message)
     QByteArray packet;
     QDataStream out(&packet, QIODevice::WriteOnly);
 
-    qDebug() << "client sends" << message;
+//    qDebug() << "client sends" << message;
 
     out << (quint16) 0;
     out << message;

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QSerialPort>
 #include <QSerialPortInfo>
-#include <QDebug>
+//#include <QDebug>
 #include <QtWidgets>
 
 class Arduino : public QObject
