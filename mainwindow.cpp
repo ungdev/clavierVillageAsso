@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     removedChars = 0;
     lastRemovedChars = 0;
 
+    countdownTimer = NULL;
     charsCounterTimer = new QTimer();
     charsCounterTimer->start(300);
     maximumEvery300ms = 5;
@@ -85,6 +86,8 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->menuSerial->menuAction()->setVisible(false);
         ui->menuUNG->menuAction()->setVisible(false);
     });
+
+    log("Ready");
 }
 
 MainWindow::~MainWindow()
@@ -122,22 +125,26 @@ void MainWindow::launchClicked(bool resend)
         }
     }
 
+    if (countdownTimer != NULL)
+    {
+        return;
+    }
 
     ui->launchButton->setEnabled(false);
 
     ui->countdown->setText(QVariant(countdown).toString());
-    QTimer* countdownTimer = new QTimer();
+    countdownTimer = new QTimer();
     connect(countdownTimer, &QTimer::timeout, [=]() {
         --countdown;
 
         if (countdown == -1) {
             ui->countdown->setText("");
-            started = true;
             countdownTimer->stop();
             return;
         }
 
         if (countdown == 0) {
+            started = true;
             ui->countdown->setText("GO!");
             return;
         }
@@ -215,17 +222,13 @@ void MainWindow::charsCounter()
     else
     {
         QString value = "s" + rawValue;
+        log("arduino> " + value);
         if (arduinoIsReady)
         {
             if (arduino->isAvailable())
             {
-                // qDebug() << "Send to arduino : «" << value << "»";
                 arduino->rawSend(value);
             }
-        }
-        else
-        {
-            // qDebug() << "Would have sent to arduino : «" << value << "»";
         }
     }
 
@@ -279,17 +282,14 @@ void MainWindow::startServer()
 
     connect(server, &Server::clientSpeed, [=](int clientSpeed) {
         QString value = "c" + QVariant(clientSpeed).toString();
+
+        log("arduino> " + value);
         if (arduinoIsReady)
         {
             if (arduino->isAvailable())
             {
-                // qDebug() << "Send to arduino :" << value;
                 arduino->rawSend(value);
             }
-        }
-        else
-        {
-            // qDebug() << "Would have sent to arduino :" << value;
         }
     });
 
@@ -351,4 +351,9 @@ bool MainWindow::requireClient(bool silent)
     }
 
     return false;
+}
+
+void MainWindow::log(QString message)
+{
+    std::cout << message.toStdString() << std::endl;
 }

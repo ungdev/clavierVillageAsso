@@ -5,6 +5,8 @@ Client::Client(QObject *parent, QString host, int port) : QObject(parent)
     socket = new QTcpSocket(this);
     blockSize = 0;
 
+    parentW = (MainWindow*) parent;
+
     connect(socket, &QTcpSocket::readyRead, this, &Client::readMessage);
     // Can't write this with new styel
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
@@ -35,7 +37,7 @@ void Client::readMessage()
     in >> message;
     blockSize = 0;
 
-    qDebug() << "client got" << message;
+    parentW->log("client got " + message);
 
     if (message == "ready")
     {
@@ -84,8 +86,6 @@ void Client::rawSend(QString message)
 {
     QByteArray packet;
     QDataStream out(&packet, QIODevice::WriteOnly);
-
-//    qDebug() << "client sends" << message;
 
     out << (quint16) 0;
     out << message;

@@ -1,12 +1,15 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "mainwindow.h"
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QMessageBox>
 #include <QNetworkInterface>
 //#include <QDebug>
+
+class MainWindow;
 
 class Server : public QObject
 {
@@ -28,6 +31,7 @@ private slots:
     void broadcastMessage();
 
 private:
+    MainWindow* parentW;
     QTcpServer* server;
     QList<QTcpSocket*> clients;
     quint16 blockSize;

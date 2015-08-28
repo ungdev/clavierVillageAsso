@@ -1,9 +1,12 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include "mainwindow.h"
 #include <QObject>
 #include <QTcpSocket>
 #include <QMessageBox>
+
+class MainWindow;
 
 class Client : public QObject
 {
@@ -24,6 +27,7 @@ signals:
     void ping();
 
 private:
+    MainWindow* parentW;
     QTcpSocket* socket;
     quint16 blockSize;
 };

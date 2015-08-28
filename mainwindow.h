@@ -15,7 +15,10 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QInputDialog>
-//#include <QDebug>
+#include <iostream>
+
+class Server;
+class Client;
 
 namespace Ui {
 class MainWindow;
@@ -26,7 +29,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget* parent = 0);
+    void log(QString message);
     ~MainWindow();
 
 public slots:
@@ -36,10 +40,10 @@ public slots:
     void startClient();
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *e);
+    virtual void keyPressEvent(QKeyEvent* e);
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
     int8_t countdown;
     bool started;
     int actualCharIndex;
@@ -50,6 +54,7 @@ private:
 
     int maximumEvery300ms;
     QTimer* charsCounterTimer;
+    QTimer* countdownTimer;
 
     bool isClient;
     bool ready;

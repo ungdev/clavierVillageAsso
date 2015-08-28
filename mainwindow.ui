@@ -240,6 +240,8 @@ p, li { white-space: pre-wrap; }
      <string>UNG</string>
     </property>
     <addaction name="hideMenus"/>
+    <addaction name="showLog"/>
+    <addaction name="actionTest_Log"/>
    </widget>
    <addaction name="menuChanson"/>
    <addaction name="menuConnection"/>
@@ -269,6 +271,16 @@ p, li { white-space: pre-wrap; }
   <action name="hideMenus">
    <property name="text">
     <string>Tout ok; cacher les menus</string>
+   </property>
+  </action>
+  <action name="showLog">
+   <property name="text">
+    <string>Log</string>
+   </property>
+  </action>
+  <action name="actionTest_Log">
+   <property name="text">
+    <string>Test Log</string>
    </property>
   </action>
  </widget>

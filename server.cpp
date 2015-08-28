@@ -9,6 +9,8 @@ Server::Server(QObject *parent) : QObject(parent)
         return;
     }
 
+    parentW = (MainWindow*) parent;
+
     QString addr = getLocalIP();
     QString port = QVariant(server->serverPort()).toString();
     QMessageBox* success = new QMessageBox(QMessageBox::Information, "Server", "Server listening on " + addr + ":" + port, QMessageBox::Ok);
@@ -55,7 +57,7 @@ void Server::broadcastMessage()
     QString message;
     in >> message;
 
-    qDebug() << "server got" << message;
+    parentW->log("server got" + message);
 
     if (message == "ready")
     {
@@ -104,7 +106,6 @@ void Server::rawSend(QString message)
 
     for(int i = 0; i < clients.size(); ++i)
     {
-        // qDebug() << "server sending" << message << "to one guy";
         clients[i]->write(packet);
     }
 }

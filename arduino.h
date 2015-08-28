@@ -11,13 +11,13 @@ class Arduino : public QObject
 {
     Q_OBJECT
 public:
-    explicit Arduino(QObject *parent = 0);
+    explicit Arduino(QObject* parent = 0);
     ~Arduino();
     void rawSend(QString message);
     bool isAvailable();
 
 private:
-    QSerialPort *arduino;
+    QSerialPort* arduino;
     static const quint16 arduinoUnoVendorId = 9025;
     static const quint16 arduinoUnoProductId = 67;
     QString arduinoPortName;
