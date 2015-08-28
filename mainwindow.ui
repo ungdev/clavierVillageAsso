@@ -200,7 +200,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../Téléchargements/logo.png</pixmap>
+     <pixmap resource="res.qrc">:/logo.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -273,6 +273,8 @@ p, li { white-space: pre-wrap; }
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>
