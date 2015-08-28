@@ -23,8 +23,7 @@ HEADERS  += mainwindow.h \
     client.h \
     arduino.h
 
-FORMS    += mainwindow.ui \
-    log.ui
+FORMS    += mainwindow.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
 QMAKE_CXXFLAGS += -DQT_COMPILING_QSTRING_COMPAT_CPP
